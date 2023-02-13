@@ -7,7 +7,7 @@ const User = () => {
 		{
 			id: 'u1',
 			name: 'Test User',
-			image: 'https://this-person-does-not-exist.com/img/avatar-998be1935b28d45b47987b49b3647df4.jpg',
+			image: 'https://this-person-does-not-exist.com/img/avatar-3bfde5518565f41f88dedbed244bc37c.jpg',
 			places: '3',
 		}
 	];
