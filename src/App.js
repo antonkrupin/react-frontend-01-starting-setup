@@ -9,14 +9,18 @@ import routes from './routes';
 
 import User from './user/pages/Users';
 import NewPlace from './places/pages/NewPlace';
+import MainNavigation from './shared/components/Navigation/MainNavigation';
 
 const App = () => (
   <BrowserRouter>
-		<Routes>
-			<Route path={routes.usersPagePath()} element={<User />} />
-			<Route path={routes.newPlacePagePath()} element={<NewPlace />} />
-			<Route path={routes.page404Path()} element={<h1>Page 404</h1>} />
-		</Routes>
+		<MainNavigation />
+		<main>
+			<Routes>
+				<Route path={routes.usersPagePath()} element={<User />} />
+				<Route path={routes.newPlacePagePath()} element={<NewPlace />} />
+				<Route path={routes.page404Path()} element={<h1>Page 404</h1>} />
+			</Routes>
+		</main>
 	</BrowserRouter>
 );
 
