@@ -17,7 +17,7 @@ const App = () => (
 		<MainNavigation />
 		<main>
 			<Routes>
-				<Route path={`/:uid/places`} element={<UserPlaces />} />
+				<Route path={routes.userPlacesPath()} element={<UserPlaces />} />
 				<Route path={routes.usersPagePath()} element={<User />} />
 				<Route path={routes.newPlacePagePath()} element={<NewPlace />} />
 				<Route path={routes.page404Path()} element={<h1>Page 404</h1>} />
