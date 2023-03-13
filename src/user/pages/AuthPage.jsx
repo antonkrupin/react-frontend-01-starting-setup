@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
@@ -10,11 +10,15 @@ import {
   VALIDATOR_REQUIRE
 } from '../../shared/utils/validators';
 
+import { AuthContext } from '../../shared/context/Auth-context';
+
 import { useForm } from '../../shared/hooks/form-hook';
 
 import './AuthPage.css';
 
 const AuthPage = () => {
+  const auth = useContext(AuthContext);
+
   const [isLogginMode, setLoggingMode] = useState(true);
 
   const [formState, inputHandler, setFormData] = useForm({
@@ -30,6 +34,7 @@ const AuthPage = () => {
 
   const authFormSubmit = (e) => {
     e.preventDefault();
+    auth.login();
     console.log(formState);
   };
 
@@ -87,7 +92,11 @@ const AuthPage = () => {
           errorText="Please enter a password. Min length - 8 characters."
           onInput={inputHandler}
         />
-        <Button disabled={!formState.isValid}>{isLogginMode ? 'LOGIN' : 'SIGNUP'}</Button>
+        <Button
+          disabled={!formState.isValid}
+        >
+          {isLogginMode ? 'LOGIN' : 'SIGNUP'}
+        </Button>
         <Button inverse onClick={switchLoggingMode}>SWITCH TO {isLogginMode ? 'SIGNUP' : 'LOGIN'}</Button>
       </form>
     </Card>
