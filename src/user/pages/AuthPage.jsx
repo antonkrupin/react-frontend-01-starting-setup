@@ -13,7 +13,7 @@ import {
 } from '../../shared/utils/validators';
 
 import { AuthContext } from '../../shared/context/Auth-context';
-
+import { useHttpClient } from '../../shared/hooks/http-hook';
 import { useForm } from '../../shared/hooks/form-hook';
 
 import './AuthPage.css';
@@ -23,9 +23,11 @@ const AuthPage = () => {
 
   const [isLogginMode, setLoggingMode] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
 
-  const [error, setError] = useState(null);
+  // const [error, setError] = useState(null);
+
+  const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const [formState, inputHandler, setFormData] = useForm({
     email: {
@@ -40,53 +42,41 @@ const AuthPage = () => {
 
   const authFormSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
+    // setIsLoading(true);
     if (isLogginMode) {
       try {
-        const response = await fetch('http://localhost:5000/api/users/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
+        const responseData = await sendRequest(
+          'http://localhost:5000/api/users/login',
+          'POST',
+          JSON.stringify({
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
-        setIsLoading(false);
-        auth.login();
+          }),
+          {
+          'Content-Type': 'application/json'
+          }
+        );
+        auth.login(responseData.user.id);
       } catch (err) {
-        setIsLoading(false);
-        setError(err.message || 'Something went wrong. Please try again.');
+
       }
     } else {
       try {
-        const response = await fetch('http://localhost:5000/api/users/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
+        const responseData = await sendRequest(
+          'http://localhost:5000/api/users/signup', 
+          'POST',
+          JSON.stringify({
             name: formState.inputs.name.value,
             email: formState.inputs.email.value,
             password: formState.inputs.password.value,
-          })
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
-        setIsLoading(false);
-        auth.login();
+          }),
+          {
+            'Content-Type': 'application/json'
+          },
+        );
+        auth.login(responseData.user.id);
       } catch (err) {
-        setIsLoading(false);
-        setError(err.message || 'Something went wrong. Please try again.');
+
       }
     }
   };
@@ -113,13 +103,9 @@ const AuthPage = () => {
     setLoggingMode(prevMode => !prevMode);
   };
 
-  const errorHandler = () => {
-    setError(null);
-  };
-
   return (
     <>
-      <ErrorModal error={error} onClear={errorHandler} />
+      <ErrorModal error={error} onClear={clearError} />
       <Card className="authentication">
         {isLoading && <LoadingSpinner asOverlay />}
         <form onSubmit={authFormSubmit}>
