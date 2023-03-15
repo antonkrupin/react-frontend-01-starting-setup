@@ -3,7 +3,7 @@ import {
 	BrowserRouter,
 	Routes,
 	Route,
-	redirect,
+	Navigate,
 } from 'react-router-dom';
 
 import User from './user/pages/Users';
@@ -16,24 +16,6 @@ import MainNavigation from './shared/components/Navigation/MainNavigation';
 import routes from './routes';
 
 import { AuthContext } from './shared/context/Auth-context';
-
-/* const App = () => (
-  <AuthContext value={}>
-		<BrowserRouter>
-			<MainNavigation />
-			<main>
-				<Routes>
-					<Route path={routes.userPlacesPath()} element={<UserPlaces />} />
-					<Route path={routes.usersPagePath()} element={<User />} />
-					<Route path={routes.newPlacePagePath()} element={<NewPlace />} />
-					<Route path={routes.updatePlacePath()} element={<UpdatePlace />} />
-					<Route path={routes.authPagePath()} element={<AuthPage />} />
-					<Route path={routes.page404Path()} element={<h1>Page 404</h1>} />
-				</Routes>
-			</main>
-		</BrowserRouter>
-	</AuthContext>
-); */
 
 const App = () => {
 	const [isLoggedIn, setLoggedIn] = useState(false);
@@ -56,7 +38,7 @@ const App = () => {
 						<Route path={routes.usersPagePath()} element={<User />} />
 						<Route path={routes.newPlacePagePath()} element={<NewPlace />} />
 						<Route path={routes.updatePlacePath()} element={<UpdatePlace />} />
-						<Route path={routes.authPagePath()} element={<AuthPage />} />
+						<Route path={routes.authPagePath()} element={!isLoggedIn ? <AuthPage /> : <Navigate replace to={routes.usersPagePath()} />} />
 						<Route path={routes.page404Path()} element={<h1>Page 404</h1>} />
 					</Routes>
 				</main>
