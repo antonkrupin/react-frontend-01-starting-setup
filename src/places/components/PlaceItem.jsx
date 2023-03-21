@@ -1,4 +1,5 @@
 import React, { useState, useContext } from 'react';
+import { useParams } from 'react-router';
 
 import Card from '../../shared/components/UIElements/Card';
 import Button from '../../shared/components/FormElements/Button';
@@ -20,6 +21,7 @@ const PlaceItem = (props) => {
   } = props;
 
   const auth = useContext(AuthContext);
+	const uid = useParams().uid;
 
   const [showMap, setShowMap] = useState(false);
 
@@ -84,10 +86,10 @@ const PlaceItem = (props) => {
           </div>
           <div className="place-item__actions">
             <Button inverse onClick={openMapHandler}>VIEW ON MAP</Button>
-            {auth.isLoggedIn && (
+            {auth.isLoggedIn && auth.userId === uid && (
               <Button to={`/places/${id}`}>EDIT</Button>
             )}
-            {auth.isLoggedIn && (
+            {auth.isLoggedIn && auth.userId === uid && (
               <Button danger onClick={showDeleteModalHandler}>DELETE</Button>
             )}
           </div>
