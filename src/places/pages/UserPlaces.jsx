@@ -15,20 +15,17 @@ const UserPlaces = () => {
 
 	const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
-	const fetchPlaces = async () => {
-		try {
-			const responseData = await sendRequest(
-				`http://localhost:5000/api/places//user/${uid}`,
-			);
-			setUserPlaces(responseData.userPlaces);
-		} catch (err) {
-
-		}
-	}
-
 	useEffect(() => {
+		const fetchPlaces = async () => {
+			try {
+				const responseData = await sendRequest(
+					`http://localhost:5000/api/places/user/${uid}`,
+				);
+				setUserPlaces(responseData.userPlaces);
+			} catch (err) {}
+		}
 		fetchPlaces();
-	}, []);
+	}, [sendRequest, uid]);
 	
 	return (
 		<>
