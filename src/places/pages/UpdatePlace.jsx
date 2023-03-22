@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, useState, useContext } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
@@ -11,11 +11,14 @@ import { VALIDATOR_REQUIRE, VALIDATOR_MINLENGTH } from '../../shared/utils/valid
 
 import { useForm } from '../../shared/hooks/form-hook';
 import { useHttpClient } from '../../shared/hooks/http-hook';
+import { AuthContext } from '../../shared/context/Auth-context';
 
 const UpdatePlace = () => {
   const pid = useParams().pid;
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
   const [ place, setPlace ] = useState();
+  const auth = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [formState, inputHandler, setFormData] = useForm({
     title: {
@@ -51,17 +54,20 @@ const UpdatePlace = () => {
 
   const placeUpdateSubmitHandler = async (e) => {
     e.preventDefault();
-    await sendRequest(
-      `http://localhost:5000/api/places/${pid}`,
-      'PATCH',
-      JSON.stringify({
-        title: formState.inputs.title.value,
-        description: formState.inputs.description.value,
-      }),
-      {
-        'Content-Type': 'application/json'
-      },
-    );
+    try {
+      await sendRequest(
+        `http://localhost:5000/api/places/${pid}`,
+        'PATCH',
+        JSON.stringify({
+          title: formState.inputs.title.value,
+          description: formState.inputs.description.value,
+        }),
+        {
+          'Content-Type': 'application/json'
+        },
+      );
+      navigate(`/${auth.userId}/places`);
+    } catch (err) {}
   };
 
   return (
@@ -85,8 +91,8 @@ const UpdatePlace = () => {
 						validators={[VALIDATOR_REQUIRE()]}
 						errorText="Please enter a valid title."
 						onInput={inputHandler}
-						initialValue={formState.inputs.title.value}
-						initialValid={formState.inputs.title.isValid}
+						initialValue={place.title}
+						initialValid={true}
 					/>
 					<Input
 						id="description"
@@ -95,8 +101,8 @@ const UpdatePlace = () => {
 						validators={[VALIDATOR_MINLENGTH(5)]}
 						errorText="Please enter a valid description. 5 chars min."
 						onInput={inputHandler}
-						initialValue={formState.inputs.description.value}
-						initialValid={formState.inputs.description.isValid}
+						initialValue={place.description}
+						initialValid={true}
 					/>
 					<Button type="submit" disabled={!formState.isValid} >UPDATE PLACE</Button>
 				</form>
