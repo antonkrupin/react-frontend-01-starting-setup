@@ -30,45 +30,23 @@ const UpdatePlace = () => {
 
   useEffect(() => {
     const fetchPlace = async () => {
-      const responseData = await sendRequest(`http://localhost:5000/api/places/${pid}`);
-      setPlace(responseData.place);
-      setFormData({
-        title: {
-          value: place.title,
-          isValid: true,
-        },
-        description: {
-          value: place.description,
-          isValid: true,
-        }
-      }, true);
-      console.log('responseData', responseData.place);
-      console.log('formState', formState);
+      try {
+				const responseData = await sendRequest(`http://localhost:5000/api/places/${pid}`);
+				setPlace(responseData.place);
+				setFormData({
+					title: {
+						value: responseData.place.title,
+						isValid: true,
+					},
+					description: {
+						value: responseData.place.description,
+						isValid: true,
+					}
+				}, true);
+			} catch (err) {}
+
     }
     fetchPlace();
-    /* setFormData({
-      title: {
-        value: place.title,
-        isValid: true,
-      },
-      description: {
-        value: place.description,
-        isValid: true,
-      }
-    }, true); */
-    /* if (place) {
-      setFormData({
-        title: {
-          value: place.title,
-          isValid: true,
-        },
-        description: {
-          value: place.description,
-          isValid: true,
-        }
-      }, true)
-    } */
-    // setIsLoading(false);
   }, [sendRequest, pid, setFormData]);
 
   const placeUpdateSubmitHandler = async (e) => {
@@ -86,51 +64,43 @@ const UpdatePlace = () => {
     );
   };
 
-  /* if (!place) {
-    return (
-      <div className="center">
-        <Card>
-          <h2>Could not find place!</h2>
-        </Card>
-      </div>
-    )
-  } */
-
   return (
     <>
       <ErrorModal error={error} onClear={clearError} />
       {isLoading && <LoadingSpinner asOverlay />}
-      {!isLoading && !place && (
+      {!error && !place && (
         <div className="center">
           <Card>
             <h2>Could not find place!</h2>
           </Card>
         </div>
       )}
-      <form className="place-form" onSubmit={placeUpdateSubmitHandler}>
-        <Input
-          id="title"
-          element="input"
-          type="text"
-          label="Title"
-          validators={[VALIDATOR_REQUIRE()]}
-          errorText="Please enter a valid title."
-          onInput={inputHandler}
-          initialValue={formState.inputs.title.value}
-          initialValid={formState.inputs.title.isValid}
-        />
-        <Input
-          id="description"
-          element="textarea"
-          label="Description"
-          validators={[VALIDATOR_MINLENGTH(5)]}
-          errorText="Please enter a valid description. 5 chars min."
-          onInput={inputHandler}
-          initialValue={formState.inputs.description.value}
-          initialValid={formState.inputs.description.isValid}
-        />
-        <Button type="submit" disabled={!formState.isValid} >UPDATE PLACE</Button>
-      </form>
+      {!isLoading && place && (
+				<form className="place-form" onSubmit={placeUpdateSubmitHandler}>
+					<Input
+						id="title"
+						element="input"
+						type="text"
+						label="Title"
+						validators={[VALIDATOR_REQUIRE()]}
+						errorText="Please enter a valid title."
+						onInput={inputHandler}
+						initialValue={formState.inputs.title.value}
+						initialValid={formState.inputs.title.isValid}
+					/>
+					<Input
+						id="description"
+						element="textarea"
+						label="Description"
+						validators={[VALIDATOR_MINLENGTH(5)]}
+						errorText="Please enter a valid description. 5 chars min."
+						onInput={inputHandler}
+						initialValue={formState.inputs.description.value}
+						initialValid={formState.inputs.description.isValid}
+					/>
+					<Button type="submit" disabled={!formState.isValid} >UPDATE PLACE</Button>
+				</form>
+			)}
     </>
   )
 };
