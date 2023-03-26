@@ -39,6 +39,9 @@ const AuthPage = () => {
 
   const authFormSubmit = async (e) => {
     e.preventDefault();
+
+    console.log(formState.inputs);
+
     if (isLogginMode) {
       try {
         const responseData = await sendRequest(
@@ -81,7 +84,8 @@ const AuthPage = () => {
     if (!isLogginMode) {
       setFormData({
         ...formState.inputs,
-        name: undefined
+        name: undefined,
+        image: undefined,
       },
       formState.inputs.email.isValid && formState.inputs.password.isValid,
       );
@@ -90,6 +94,10 @@ const AuthPage = () => {
         ...formState.inputs,
         name: {
           value: '',
+          isValid: false,
+        },
+        image: {
+          value: null,
           isValid: false,
         }
       },
@@ -116,7 +124,7 @@ const AuthPage = () => {
             onInput={inputHandler}
           />
           )}
-          {!isLogginMode && <ImageUpload id="image" center/>}
+          {!isLogginMode && <ImageUpload id="image" center onInput={inputHandler} />}
           <Input
             id="email"
             element="input"
