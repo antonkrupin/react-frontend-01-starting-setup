@@ -5,6 +5,7 @@ import Button from '../../shared/components/FormElements/Button';
 import Card from '../../shared/components/UIElements/Card';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 
 import {
   VALIDATOR_EMAIL,
@@ -23,10 +24,6 @@ const AuthPage = () => {
 
   const [isLogginMode, setLoggingMode] = useState(true);
 
-  // const [isLoading, setIsLoading] = useState(false);
-
-  // const [error, setError] = useState(null);
-
   const { isLoading, error, sendRequest, clearError } = useHttpClient();
 
   const [formState, inputHandler, setFormData] = useForm({
@@ -42,7 +39,6 @@ const AuthPage = () => {
 
   const authFormSubmit = async (e) => {
     e.preventDefault();
-    // setIsLoading(true);
     if (isLogginMode) {
       try {
         const responseData = await sendRequest(
@@ -120,6 +116,7 @@ const AuthPage = () => {
             onInput={inputHandler}
           />
           )}
+          {!isLogginMode && <ImageUpload id="image" center/>}
           <Input
             id="email"
             element="input"
