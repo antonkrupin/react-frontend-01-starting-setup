@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Input from '../../shared/components/FormElements/Input';
 import Button from '../../shared/components/FormElements/Button';
+import ImageUpload from '../../shared/components/FormElements/ImageUpload';
 import ErrorModal from '../../shared/components/UIElements/ErrorModal';
 import LoadingSpinner from '../../shared/components/UIElements/LoadingSpinner';
 
@@ -32,21 +33,25 @@ const NewPlace = () => {
 			value: '',
 			isValid: false,
 		},
+		image: {
+			value: null,
+			isValid: false,
+		}
 	}, false);
 
 	const formSubmitHandler = async (e) => {
 		e.preventDefault();
 		try {
+			const formData = new FormData();
+			formData.append('title', formState.inputs.title.value);
+			formData.append('description', formState.inputs.description.value);
+			formData.append('address', formState.inputs.address.value);
+			formData.append('creator', auth.userId);
+			formData.append('image', formState.inputs.image.value);
 			await sendRequest(
 				'http://localhost:5000/api/places/',
 				'POST',
-				JSON.stringify({
-					title: formState.inputs.title.value,
-					description: formState.inputs.description.value,
-					address: formState.inputs.address.value,
-					creator: auth.userId,
-				}),
-				{ 'Content-Type': 'application/json' }
+				formData,
 			);
 			navigate('/');
 		} catch (err) {}
@@ -83,6 +88,7 @@ const NewPlace = () => {
 					validators={[VALIDATOR_REQUIRE()]}
 					onInput={inputHandler}
 				/>
+				<ImageUpload id="image" center onInput={inputHandler} />
 				<Button type="submit" disabled={!formState.isValid}>ADD PLACE</Button>
 			</form>
 		</>
