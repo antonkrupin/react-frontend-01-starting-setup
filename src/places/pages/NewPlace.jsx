@@ -52,6 +52,9 @@ const NewPlace = () => {
 				'http://localhost:5000/api/places/',
 				'POST',
 				formData,
+				{
+					Authorization: 'Bearer ' + auth.token
+				}
 			);
 			navigate('/');
 		} catch (err) {}

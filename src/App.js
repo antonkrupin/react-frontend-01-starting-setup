@@ -18,24 +18,25 @@ import routes from './routes';
 import { AuthContext } from './shared/context/Auth-context';
 
 const App = () => {
-	const [isLoggedIn, setLoggedIn] = useState(false);
+	const [token, setToken] = useState(false);
 	const [userId, setUserId] = useState(false);
 
-	const login = useCallback((uid) => {
-		setLoggedIn(true);
+	const login = useCallback((uid, token) => {
+		setToken(token);
 		setUserId(uid);
 	}, []);
 
 	const logout = useCallback(() => {
-		setLoggedIn(false);
+		setToken(null);
 		setUserId(null);
 	}, []);
 
 	return (
 		<AuthContext.Provider
 			value={{
-				isLoggedIn,
+				isLoggedIn: !!token,
 				userId: userId,
+				token: token,
 				login,
 				logout
 			}}
@@ -48,7 +49,7 @@ const App = () => {
 						<Route path={routes.usersPagePath()} element={<User />} />
 						<Route path={routes.newPlacePagePath()} element={<NewPlace />} />
 						<Route path={routes.updatePlacePath()} element={<UpdatePlace />} />
-						<Route path={routes.authPagePath()} element={!isLoggedIn ? <AuthPage /> : <Navigate replace to={routes.usersPagePath()} />} />
+						<Route path={routes.authPagePath()} element={!token ? <AuthPage /> : <Navigate replace to={routes.usersPagePath()} />} />
 						<Route path={routes.page404Path()} element={<h1>Page 404</h1>} />
 					</Routes>
 				</main>
